@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { Task } from './task.module';
 import { TasksService } from './tasks.service';
 
@@ -8,16 +9,25 @@ export class TasksController {
 	constructor(private tasksService: TasksService) {}
 
 	@Get()
+	// http://localhost:3000/tasks
 	// 请求方法
 	getAllTasks(): Task[] {
 		return this.tasksService.getAllTasks();
 	}
 
+	@Get('/:id')
+	// http://localhost:3000/tasks/:uuid
+	getTaskById(@Param('id') id: string): Task {
+		return this.tasksService.getTaskById(id);
+	}
+
+	@Delete('/:id')
+	deleteTaskById(@Param('id') id: string): void {
+		return this.tasksService.deleteTaskById(id);
+	}
+
 	@Post()
-	createTask(
-		@Body('title') title: string,
-		@Body('description') description: string,
-	): Task {
-		return this.tasksService.createTask(title, description);
+	createTask(@Body() createTaskDto: CreateTaskDto): Task {
+		return this.tasksService.createTask(createTaskDto);
 	}
 }
